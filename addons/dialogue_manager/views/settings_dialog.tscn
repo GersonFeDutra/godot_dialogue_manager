@@ -3,12 +3,17 @@
 [ext_resource type="Script" path="res://addons/dialogue_manager/views/settings_dialog.gd" id="1"]
 
 [node name="SettingsDialog" type="Window"]
+size = Vector2i(600, 500)
+min_size = Vector2i(600, 500)
 script = ExtResource( "1" )
 _settings = NodePath("")
 
 [node name="Margin" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -424.0
+offset_bottom = -100.0
+rect_min_size = Vector2(600, 500)
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_right = 10
@@ -22,8 +27,8 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="Margin"]
 offset_left = 10.0
 offset_top = 10.0
-offset_right = 1079.0
-offset_bottom = 590.0
+offset_right = 590.0
+offset_bottom = 490.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
@@ -32,8 +37,8 @@ __meta__ = {
 }
 
 [node name="Tabs" type="TabContainer" parent="Margin/VBox"]
-offset_right = 1069.0
-offset_bottom = 539.0
+offset_right = 580.0
+offset_bottom = 439.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -57,46 +62,49 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="Margin/VBox/Tabs/Editor"]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 1065.0
-offset_bottom = 504.0
+offset_right = 576.0
+offset_bottom = 404.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ErrorsTitle" type="Label" parent="Margin/VBox/Tabs/Editor/VBox"]
-offset_right = 1061.0
+offset_right = 572.0
 offset_bottom = 26.0
 text = "Errors"
 
 [node name="CheckForErrorsButton" type="CheckButton" parent="Margin/VBox/Tabs/Editor/VBox"]
 offset_top = 30.0
-offset_right = 1061.0
+offset_right = 572.0
 offset_bottom = 61.0
 text = "Check for errors while you type"
 
 [node name="MissingTranslationsButton" type="CheckButton" parent="Margin/VBox/Tabs/Editor/VBox"]
 offset_top = 65.0
-offset_right = 1061.0
+offset_right = 572.0
 offset_bottom = 96.0
 text = "Treat missing static translation keys as errors"
 
 [node name="Margin" type="MarginContainer" parent="Margin/VBox/Tabs/Editor/VBox"]
 modulate = Color(1, 1, 1, 0.470588)
 offset_top = 100.0
-offset_right = 1061.0
-offset_bottom = 126.0
+offset_right = 572.0
+offset_bottom = 178.0
 theme_override_constants/margin_right = 80
 theme_override_constants/margin_left = 20
 
 [node name="TranslationHelp" type="Label" parent="Margin/VBox/Tabs/Editor/VBox/Margin"]
 offset_left = 20.0
-offset_right = 981.0
-offset_bottom = 26.0
+offset_right = 492.0
+offset_bottom = 78.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "If you are using static translation keys then having this enabled will help you find any lines that you haven't added a key to yet."
+autowrap_mode = 2
 
 [node name="Spacer" type="Control" parent="Margin/VBox/Tabs/Editor/VBox"]
-offset_top = 130.0
-offset_right = 1061.0
-offset_bottom = 500.0
+offset_top = 182.0
+offset_right = 572.0
+offset_bottom = 400.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -117,16 +125,22 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="Margin/VBox/Tabs/Runtime"]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 1065.0
-offset_bottom = 535.0
+offset_right = 608.0
+offset_bottom = 435.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
 [node name="Message" type="Label" parent="Margin/VBox/Tabs/Runtime/VBox"]
+offset_right = 996.0
+offset_bottom = 26.0
 text = "Choose which globals contain game state or methods that your dialogue needs."
+autowrap_mode = 2
 
 [node name="GlobalsList" type="Tree" parent="Margin/VBox/Tabs/Runtime/VBox"]
+offset_top = 36.0
+offset_right = 996.0
+offset_bottom = 531.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 3
@@ -135,16 +149,16 @@ hide_root = true
 select_mode = 1
 
 [node name="Actions" type="CenterContainer" parent="Margin/VBox"]
-offset_top = 549.0
-offset_right = 1069.0
-offset_bottom = 580.0
+offset_top = 449.0
+offset_right = 580.0
+offset_bottom = 480.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="DoneButton" type="Button" parent="Margin/VBox/Actions"]
-offset_left = 510.0
-offset_right = 559.0
+offset_left = 265.0
+offset_right = 314.0
 offset_bottom = 31.0
 text = "Done"
 

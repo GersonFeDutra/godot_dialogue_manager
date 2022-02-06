@@ -161,7 +161,7 @@ func apply_upgrades(resource: DialogueResource) -> void:
 				line = line.substr(0, index) + "=> " + line.substr(index + 7).replace(" ", "_")
 		lines[i] = line
 	
-	resource.raw_text = lines.join("\n")
+	resource.raw_text = "\n".join(lines)
 	
 
 func parse(force_show_errors: bool = false) -> void:
@@ -182,10 +182,10 @@ func parse(force_show_errors: bool = false) -> void:
 		error_list.errors = current_resource.errors
 		
 		for line_number in range(0, editor.get_line_count() - 1):
-			editor.set_line_as_bookmark(line_number, false)
+			editor.set_line_as_bookmarked(line_number, false)
 			for error in current_resource.errors:
 				if error.get("line") == line_number:
-					editor.set_line_as_bookmark(line_number, true)
+					editor.set_line_as_bookmarked(line_number, true)
 
 
 func generate_translations_keys() -> void:

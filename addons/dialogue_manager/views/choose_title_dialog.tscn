@@ -4,7 +4,9 @@
 [ext_resource type="Script" path="res://addons/dialogue_manager/views/choose_title_dialog.gd" id="2"]
 
 [node name="ChooseTitleDialog" type="Window"]
-size = Vector2i(1440, 900)
+title = "Choose a node"
+size = Vector2i(500, 400)
+min_size = Vector2i(500, 400)
 script = ExtResource( "2" )
 
 [node name="Margin" type="MarginContainer" parent="."]

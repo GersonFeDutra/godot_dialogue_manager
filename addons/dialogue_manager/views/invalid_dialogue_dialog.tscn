@@ -1,4 +1,7 @@
 [gd_scene format=3 uid="uid://j4lfyjuhv2du"]
 
 [node name="InvalidDialogueDialog" type="AcceptDialog"]
+title = ""
+size = Vector2i(255, 81)
+min_size = Vector2i(217, 58)
 dialog_text = "That is not a DialogueResource."

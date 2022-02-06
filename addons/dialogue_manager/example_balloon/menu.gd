@@ -36,6 +36,7 @@ var page_down_counter := 0
 
 
 func _ready() -> void:
+	# WATCH
 	#await get_tree().process_frame
 	self.index = index
 

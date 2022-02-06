@@ -1,12 +1,9 @@
-[gd_scene format=2]
+[gd_scene format=3 uid="uid://clla6buuf8mg3"]
 
 [node name="OpenDialogueDialog" type="FileDialog"]
-anchor_right = 0.5
-anchor_bottom = 0.5
-rect_min_size = Vector2( 600, 500 )
-window_title = "Open a File"
-mode = 0
-filters = PoolStringArray( "*.tres ; Resources" )
+size = Vector2i(600, 500)
+min_size = Vector2i(600, 500)
+filters = PackedStringArray("*.tres ; Resources")
 __meta__ = {
 "_edit_use_anchors_": false
 }

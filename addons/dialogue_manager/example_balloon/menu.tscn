@@ -3,6 +3,10 @@
 [ext_resource type="Script" path="res://addons/dialogue_manager/example_balloon/menu.gd" id="1"]
 
 [node name="Menu" type="VBoxContainer"]
+offset_left = 40.0
+offset_right = 984.0
+offset_bottom = 98.0
+rect_min_size = Vector2(944, 98)
 script = ExtResource( "1" )
 __meta__ = {
 "_edit_use_anchors_": false

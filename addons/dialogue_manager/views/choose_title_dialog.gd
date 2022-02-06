@@ -14,10 +14,6 @@ var chosen_title: String = ""
 @onready var title_list: TitleList = $Margin/VBox/TitleList
 
 
-func _ready() -> void:
-	size = DisplayServer.window_get_size()
-
-
 func choose_a_title(titles: Array) -> void:
 	title_list.titles = titles
 	popup_centered()

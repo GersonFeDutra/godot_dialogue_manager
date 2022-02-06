@@ -34,6 +34,7 @@ __meta__ = {
 [node name="Background" type="ColorRect" parent="Balloon"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+color = Color(0.611765, 0.576471, 1, 1)
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -51,12 +52,12 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="Balloon/Margin"]
 offset_left = 40.0
 offset_top = 10.0
-offset_right = 984.0
-offset_bottom = 48.0
+offset_right = 1024.0
+offset_bottom = 182.0
 
 [node name="Character" type="RichTextLabel" parent="Balloon/Margin/VBox"]
 modulate = Color(1, 1, 1, 0.470588)
-offset_right = 944.0
+offset_right = 984.0
 offset_bottom = 30.0
 rect_min_size = Vector2(0, 30)
 theme_override_colors/default_color = Color(0, 0, 0, 1)
@@ -66,8 +67,9 @@ scroll_active = false
 
 [node name="Dialogue" parent="Balloon/Margin/VBox" instance=ExtResource( "7" )]
 offset_top = 34.0
-offset_right = 944.0
-offset_bottom = 34.0
+offset_right = 984.0
+offset_bottom = 70.0
+rect_min_size = Vector2(0, 36)
 theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_fonts/italics_font = SubResource( "5" )
 theme_override_fonts/bold_font = SubResource( "6" )
@@ -75,17 +77,15 @@ theme_override_fonts/normal_font = SubResource( "7" )
 text = "This is a bunch of dialogue!"
 
 [node name="Responses" type="MarginContainer" parent="Balloon/Margin/VBox"]
-offset_top = 38.0
-offset_right = 944.0
-offset_bottom = 38.0
+offset_top = 74.0
+offset_right = 984.0
+offset_bottom = 172.0
 theme_override_constants/margin_left = 40
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Menu" parent="Balloon/Margin/VBox/Responses" instance=ExtResource( "2" )]
-offset_left = 40.0
-offset_right = 944.0
 _pointer = NodePath("../Pointer")
 
 [node name="Pointer" type="Sprite2D" parent="Balloon/Margin/VBox/Responses"]
