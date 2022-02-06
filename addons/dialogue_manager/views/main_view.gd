@@ -1,30 +1,30 @@
-tool
+@tool
 extends Control
 
 
-const DialogueResource = preload("res://addons/dialogue_manager/dialogue_resource.gd")
-const Constants = preload("res://addons/dialogue_manager/constants.gd")
+const DialogueResource := preload("res://addons/dialogue_manager/dialogue_resource.gd")
+const Constants := preload("res://addons/dialogue_manager/constants.gd")
 
 
-onready var settings := $Settings
-onready var parser := $Parser
-onready var parse_timeout := $ParseTimeout
-onready var update_checker := $UpdateChecker
-onready var file_label := $Margin/VBox/Toolbar/FileLabel
-onready var open_button := $Margin/VBox/Toolbar/OpenButton
-onready var content := $Margin/VBox/Content
-onready var title_list := $Margin/VBox/Content/VBox/TitleList
-onready var error_list := $Margin/VBox/Content/VBox/ErrorList
-onready var editor := $Margin/VBox/Content/CodeEditor
-onready var new_dialogue_dialog := $NewDialogueDialog
-onready var open_dialogue_dialog := $OpenDialogueDialog
-onready var invalid_dialogue_dialog := $InvalidDialogueDialog
-onready var settings_dialog := $SettingsDialog
-onready var translations_menu := $Margin/VBox/Toolbar/TranslationsMenu
-onready var save_translations_dialog := $SaveTranslationsDialog
-onready var update_button := $Margin/VBox/Toolbar/UpdateButton
-onready var error_button := $Margin/VBox/Toolbar/ErrorButton
-onready var run_node_button := $Margin/VBox/Toolbar/RunButton
+@onready var settings := $Settings
+@onready var parser := $Parser
+@onready var parse_timeout := $ParseTimeout
+@onready var update_checker := $UpdateChecker
+@onready var file_label := $Margin/VBox/Toolbar/FileLabel
+@onready var open_button := $Margin/VBox/Toolbar/OpenButton
+@onready var content := $Margin/VBox/Content
+@onready var title_list := $Margin/VBox/Content/VBox/TitleList
+@onready var error_list := $Margin/VBox/Content/VBox/ErrorList
+@onready var editor := $Margin/VBox/Content/CodeEditor
+@onready var new_dialogue_dialog := $NewDialogueDialog
+@onready var open_dialogue_dialog := $OpenDialogueDialog
+@onready var invalid_dialogue_dialog := $InvalidDialogueDialog
+@onready var settings_dialog := $SettingsDialog
+@onready var translations_menu := $Margin/VBox/Toolbar/TranslationsMenu
+@onready var save_translations_dialog := $SaveTranslationsDialog
+@onready var update_button := $Margin/VBox/Toolbar/UpdateButton
+@onready var error_button := $Margin/VBox/Toolbar/ErrorButton
+@onready var run_node_button := $Margin/VBox/Toolbar/RunButton
 
 
 var plugin
@@ -40,24 +40,24 @@ func _ready() -> void:
 	# Check for updates
 	update_checker.check_for_updates()
 	update_button.visible = false
-	update_button.add_color_override("font_color", get_color("success_color", "Editor"))
+	update_button.add_theme_color_override("font_color", get_theme_color("success_color", "Editor"))
 	
 	# Set up the button icons
 	$Margin/VBox/Toolbar/NewButton.text = ""
-	$Margin/VBox/Toolbar/NewButton.icon = get_icon("New", "EditorIcons")
+	$Margin/VBox/Toolbar/NewButton.icon = get_theme_icon("New", "EditorIcons")
 	open_button.text = ""
-	open_button.icon = get_icon("Load", "EditorIcons")
+	open_button.icon = get_theme_icon("Load", "EditorIcons")
 	$Margin/VBox/Toolbar/SettingsButton.text = ""
-	$Margin/VBox/Toolbar/SettingsButton.icon = get_icon("Tools", "EditorIcons")
+	$Margin/VBox/Toolbar/SettingsButton.icon = get_theme_icon("Tools", "EditorIcons")
 	$Margin/VBox/Toolbar/ErrorButton.text = ""
-	$Margin/VBox/Toolbar/ErrorButton.icon = get_icon("Debug", "EditorIcons")
+	$Margin/VBox/Toolbar/ErrorButton.icon = get_theme_icon("Debug", "EditorIcons")
 	$Margin/VBox/Toolbar/RunButton.text = ""
-	$Margin/VBox/Toolbar/RunButton.icon = get_icon("PlayScene", "EditorIcons")
-	$Margin/VBox/Toolbar/TranslationsMenu.icon = get_icon("Translation", "EditorIcons")
-	$Margin/VBox/Toolbar/HelpButton.icon = get_icon("Help", "EditorIcons")
+	$Margin/VBox/Toolbar/RunButton.icon = get_theme_icon("PlayScene", "EditorIcons")
+	$Margin/VBox/Toolbar/TranslationsMenu.icon = get_theme_icon("Translation", "EditorIcons")
+	$Margin/VBox/Toolbar/HelpButton.icon = get_theme_icon("Help", "EditorIcons")
 	var popup = translations_menu.get_popup()
-	popup.set_item_icon(0, get_icon("Translation", "EditorIcons"))
-	popup.set_item_icon(1, get_icon("FileList", "EditorIcons"))
+	popup.set_item_icon(0, get_theme_icon("Translation", "EditorIcons"))
+	popup.set_item_icon(1, get_theme_icon("FileList", "EditorIcons"))
 	
 	# Get version number
 	var config = ConfigFile.new()
@@ -65,9 +65,9 @@ func _ready() -> void:
 	if err == OK:
 		$Margin/VBox/Toolbar/VersionLabel.text = "v" + config.get_value("plugin", "version")
 	
-	file_label.icon = get_icon("Filesystem", "EditorIcons")
+	file_label.icon = get_theme_icon("Filesystem", "EditorIcons")
 	
-	translations_menu.get_popup().connect("id_pressed", self, "_on_translation_menu_id_pressed")
+	translations_menu.get_popup().id_pressed.connect(_on_translation_menu_id_pressed)
 	
 	if settings.has_editor_value("recent_resources"):
 		recent_resources = settings.get_editor_value("recent_resources")
@@ -80,7 +80,7 @@ func _ready() -> void:
 func build_open_menu() -> void:
 	var menu = open_button.get_popup()
 	menu.clear()
-	menu.add_icon_item(get_icon("Load", "EditorIcons"), "Open...")
+	menu.add_icon_item(get_theme_icon("Load", "EditorIcons"), "Open...")
 	menu.add_separator()
 	
 	if recent_resources.size() == 0:
@@ -88,13 +88,14 @@ func build_open_menu() -> void:
 		menu.set_item_disabled(2, true)
 	else:
 		for path in recent_resources:
-			menu.add_icon_item(get_icon("File", "EditorIcons"), path)
+			menu.add_icon_item(get_theme_icon("File", "EditorIcons"), path)
 			
 	menu.add_separator()
 	menu.add_item("Clear recent files")
-	if menu.is_connected("index_pressed", self, "_on_open_menu_index_pressed"):
-		menu.disconnect("index_pressed", self, "_on_open_menu_index_pressed")
-	menu.connect("index_pressed", self, "_on_open_menu_index_pressed")
+	
+	if menu.index_pressed.is_connected(_on_open_menu_index_pressed):
+		menu.index_pressed.disconnect(_on_open_menu_index_pressed)
+	menu.index_pressed.connect(_on_open_menu_index_pressed)
 
 
 func set_resource(value: DialogueResource) -> void:
@@ -191,7 +192,7 @@ func generate_translations_keys() -> void:
 	randomize()
 	seed(OS.get_unix_time())
 	
-	var lines: PoolStringArray = editor.text.split("\n")
+	var lines: PackedStringArray = editor.text.split("\n")
 	
 	var key_regex = RegEx.new()
 	key_regex.compile("\\[TR:(?<key>.*?)\\]")
@@ -242,7 +243,7 @@ func generate_translations_keys() -> void:
 		lines[i] = line.replace(text, text + " [TR:%s]" % key)
 		known_keys[key] = text
 	
-	editor.text = lines.join("\n")
+	editor.text = "\n".join(lines)
 	_on_CodeEditor_text_changed()
 
 
@@ -272,7 +273,7 @@ func save_translations(path: String) -> void:
 		file.store_csv_line(["keys", "en"])
 
 	# Write our translations to file	
-	var known_keys: PoolStringArray = []
+	var known_keys: PackedStringArray = []
 	var dialogue = parser.parse(editor.text).get("lines")
 	
 	# Make a list of stuff that needs to go into the file
@@ -291,7 +292,7 @@ func save_translations(path: String) -> void:
 			existing_csv.erase(line.get("translation_key"))
 		else:
 			known_keys.append(line.get("text"))
-			lines_to_save.append(PoolStringArray([line.get("translation_key"), line.get("text")] + commas))
+			lines_to_save.append(PackedStringArray([line.get("translation_key"), line.get("text")] + commas))
 	
 	# Store lines in the file, starting with anything that already exists that hasn't been touched
 	for line in existing_csv.values():

@@ -1,4 +1,4 @@
-tool
+@tool
 extends VBoxContainer
 
 
@@ -6,19 +6,32 @@ signal title_clicked(title)
 signal title_dbl_clicked(title)
 
 
-onready var filter_input: LineEdit = $Filter
-onready var list: ItemList = $List
+@onready var filter_input: LineEdit = $Filter
+@onready var list: ItemList = $List
 
 
-export var include_end_conversation: bool = false
+@export var include_end_conversation: bool = false
 
 
-var titles: Array setget set_titles
-var filter: String = "" setget set_filter
+var titles: Array:
+	set(next_titles):
+		titles = next_titles
+		
+		list.clear()
+		if include_end_conversation:
+			list.add_item("END CONVERSATION")
+			
+		for title in titles:
+			if filter == "" or filter.to_lower() in title.to_lower():
+				list.add_item(title.strip_edges())
+var filter: String = "":
+	set(next_filter):
+		filter = next_filter
+		self.titles = titles
 
 
 func _ready() -> void:
-	filter_input.right_icon = get_icon("Search", "EditorIcons")
+	filter_input.right_icon = get_theme_icon("Search", "EditorIcons")
 
 
 func focus_filter() -> void:
@@ -36,27 +49,10 @@ func get_item_text(index: int) -> String:
 	return list.get_item_text(index)
 
 
-func set_titles(next_titles: Array) -> void:
-	titles = next_titles
-	
-	list.clear()
-	if include_end_conversation:
-		list.add_item("END CONVERSATION")
-		
-	for title in titles:
-		if filter == "" or filter.to_lower() in title.to_lower():
-			list.add_item(title.strip_edges())
-
-
 func select_title(title: String) -> void:
 	for i in range(0, list.get_item_count()):
 		if list.get_item_text(i) == title.strip_edges():
 			list.select(i)
-
-
-func set_filter(next_filter: String) -> void:
-	filter = next_filter
-	self.titles = titles
 
 
 ### Signals

@@ -4,15 +4,15 @@ extends CanvasLayer
 signal actioned(next_id)
 
 
-const Line = preload("res://addons/dialogue_manager/dialogue_line.gd")
-const MenuItem = preload("res://addons/dialogue_manager/example_balloon/menu_item.tscn")
+const Line := preload("res://addons/dialogue_manager/dialogue_line.gd")
+const MenuItem := preload("res://addons/dialogue_manager/example_balloon/menu_item.tscn")
 
 
-onready var balloon := $Balloon
-onready var margin := $Balloon/Margin
-onready var character_label := $Balloon/Margin/VBox/Character
-onready var dialogue_label := $Balloon/Margin/VBox/Dialogue
-onready var responses_menu := $Balloon/Margin/VBox/Responses/Menu
+@onready var balloon := $Balloon
+@onready var margin := $Balloon/Margin
+@onready var character_label := $Balloon/Margin/VBox/Character
+@onready var dialogue_label := $Balloon/Margin/VBox/Dialogue
+@onready var responses_menu := $Balloon/Margin/VBox/Responses/Menu
 
 
 var dialogue: Line
@@ -40,14 +40,14 @@ func _ready() -> void:
 	
 	if dialogue.responses.size() > 1:
 		for response in dialogue.responses:
-			var item = MenuItem.instance()
+			var item = MenuItem.instantiate()
 			item.bbcode_text = response.prompt
 			responses_menu.add_child(item)
 	
 	# Make sure our responses get included in the height reset
 	responses_menu.visible = true
 	
-	yield(get_tree(), "idle_frame")
+	await get_tree().process_frame
 	balloon.rect_min_size = margin.rect_size
 	balloon.rect_size = Vector2(0, -1)
 	balloon.rect_global_position = Vector2(0, balloon.get_viewport_rect().size.y - balloon.rect_size.y)
@@ -58,22 +58,22 @@ func _ready() -> void:
 	# Show our box
 	balloon.visible = true
 	
-	dialogue_label.type_out()
-	yield(dialogue_label, "finished")
+	# CHECK
+	await dialogue_label.type_out()
 	
 	# Wait for input
 	var next_id: String = ""
 	if dialogue.responses.size() > 1:
 		responses_menu.is_active = true
 		responses_menu.visible = true
-		var response = yield(responses_menu, "actioned")
+		var response = await responses_menu.actioned
 		next_id = dialogue.responses[response[0]].next_id
 	else:
 		while true:
 			if Input.is_action_just_pressed("ui_accept"):
 				next_id = dialogue.next_id
 				break
-			yield(get_tree(), "idle_frame")
+			await get_tree().process_frame
 	
 	# Send back input
 	emit_signal("actioned", next_id)

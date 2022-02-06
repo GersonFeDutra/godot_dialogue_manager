@@ -1,7 +1,7 @@
 extends EditorExportPlugin
 
 
-const Constants = preload("res://addons/dialogue_manager/constants.gd")
+const Constants := preload("res://addons/dialogue_manager/constants.gd")
 
 
 func _export_begin(_features, _is_debug, _path, _flags):

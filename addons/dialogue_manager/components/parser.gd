@@ -1,13 +1,13 @@
-tool
+@tool
 extends Node
 
 
 const Constants = preload("res://addons/dialogue_manager/constants.gd")
 
 
-export var _settings := NodePath()
+@export var _settings := NodePath()
 
-onready var settings = get_node(_settings)
+@onready var settings = get_node(_settings)
 
 var VALID_TITLE_REGEX := RegEx.new()
 var TRANSLATION_REGEX := RegEx.new()
@@ -133,10 +133,10 @@ func parse(content: String) -> Dictionary:
 				var previous_response = dialogue[previous_response_id]
 				# Add this response to the list on the first response so that it is the 
 				# authority on what is in the list of responses
-				previous_response["responses"] = previous_response["responses"] + PoolStringArray([str(id)])
+				previous_response["responses"] = previous_response["responses"] + PackedStringArray([str(id)])
 			else:
 				# No previous response so this is the first in the list
-				line["responses"] = PoolStringArray([str(id)])
+				line["responses"] = PackedStringArray([str(id)])
 			
 			line["next_id_after"] = find_next_line_after_responses(id, raw_lines)
 
@@ -195,7 +195,7 @@ func parse(content: String) -> Dictionary:
 			if ": " in l:
 				var bits = Array(l.strip_edges().split(": "))
 				line["character"] = bits.pop_front()
-				line["text"] = PoolStringArray(bits).join(": ").replace("!ESCAPED_COLON!", ":")
+				line["text"] = ": ".join(PackedStringArray(bits)).replace("!ESCAPED_COLON!", ":")
 			else:
 				line["character"] = ""
 				line["text"] = l.replace("!ESCAPED_COLON!", ":")

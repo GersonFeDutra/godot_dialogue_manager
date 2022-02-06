@@ -1,12 +1,12 @@
-tool
+@tool
 extends HTTPRequest
 
 
 signal has_update(version, url)
 
 
-export var plugin_url: String = ""
-export var plugin_config_url: String = ""
+@export var plugin_url: String = ""
+@export var plugin_config_url: String = ""
 
 
 func check_for_updates() -> void:
@@ -16,7 +16,8 @@ func check_for_updates() -> void:
 
 func version_to_number(version: String) -> int:
 	var bits = version.split(".")
-	return int(bits[0]) * 1000000 + int(bits[1]) * 1000 + int(bits[2])
+	
+	return bits[0].to_int() * 1000000 + bits[1].to_int() * 1000 + bits[2].to_int()
 
 
 ### Signals

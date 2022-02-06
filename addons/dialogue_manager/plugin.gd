@@ -1,10 +1,10 @@
-tool
+@tool
 extends EditorPlugin
 
 
-const DialogueResource = preload("res://addons/dialogue_manager/dialogue_resource.gd")
-const Constants = preload("res://addons/dialogue_manager/constants.gd")
-const DialogueExportPlugin = preload("res://addons/dialogue_manager/editor_export_plugin.gd")
+const DialogueResource := preload("res://addons/dialogue_manager/dialogue_resource.gd")
+const Constants := preload("res://addons/dialogue_manager/constants.gd")
+const DialogueExportPlugin := preload("res://addons/dialogue_manager/editor_export_plugin.gd")
 
 const MainView = preload("res://addons/dialogue_manager/views/main_view.tscn")
 
@@ -17,11 +17,12 @@ func _enter_tree() -> void:
 	add_autoload_singleton("DialogueManager", "res://addons/dialogue_manager/dialogue_manager.gd")
 	add_custom_type("DialogueLabel", "RichTextLabel", preload("res://addons/dialogue_manager/dialogue_label.gd"), get_plugin_icon())
 	
-	if Engine.editor_hint:
+	if Engine.is_editor_hint:
 		add_export_plugin(export_plugin)
 		
-		main_view = MainView.instance()
-		get_editor_interface().get_editor_viewport().add_child(main_view)
+		main_view = MainView.instantiate()
+		# FIXME
+		get_editor_interface().get_editor_main_control().add_child(main_view)
 		main_view.plugin = self
 		make_visible(false)
 
@@ -54,7 +55,7 @@ func get_plugin_icon() -> Texture:
 	var scale = get_editor_interface().get_editor_scale()
 	var base_color = get_editor_interface().get_editor_settings().get_setting("interface/theme/base_color")
 	var theme = "light" if base_color.v > 0.5 else "dark"
-	return load("res://addons/dialogue_manager/assets/icons/icon_%s_%d.svg" % [theme, scale]) as Texture
+	return load("res://addons/dialogue_manager/assets/icons/icon_%s_%d.svg" % [theme, clampf(scale, 1, 2)]) as Texture
 
 
 func handles(object) -> bool:

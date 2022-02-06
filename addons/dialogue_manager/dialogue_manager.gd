@@ -5,12 +5,12 @@ signal dialogue_started
 signal dialogue_finished
 
 
-const DialogueResource = preload("res://addons/dialogue_manager/dialogue_resource.gd")
-const Constants = preload("res://addons/dialogue_manager/constants.gd")
+const DialogueResource := preload("res://addons/dialogue_manager/dialogue_resource.gd")
+const Constants := preload("res://addons/dialogue_manager/constants.gd")
 const Line = preload("res://addons/dialogue_manager/dialogue_line.gd")
-const Response = preload("res://addons/dialogue_manager/dialogue_response.gd")
+const Response := preload("res://addons/dialogue_manager/dialogue_response.gd")
 
-const ExampleBalloon = preload("res://addons/dialogue_manager/example_balloon/example_balloon.gd")
+const ExampleBalloon := preload("res://addons/dialogue_manager/example_balloon/example_balloon.gd")
 
 
 var resource: DialogueResource
@@ -18,7 +18,15 @@ var game_states: Array = []
 var is_strict: bool = true
 var auto_translate: bool = true
 
-var is_dialogue_running := false setget set_is_dialogue_running
+var is_dialogue_running := false:
+	set(value):
+		if is_dialogue_running != value:
+			if value:
+				emit_signal("dialogue_started")
+			else:
+				emit_signal("dialogue_finished")
+				
+		is_dialogue_running = value
 
 var _internal_state: Dictionary = {}
 var _node_properties: Array = []
@@ -38,7 +46,7 @@ func _ready() -> void:
 	if success == OK:
 		var states = config.get_value("runtime", "states", [])
 		for node_name in states:
-			var state = get_node("/root/" + node_name)
+			var state = get_tree().root.get_node(node_name)
 			if state:
 				game_states.append(state)
 
@@ -68,7 +76,7 @@ func get_next_dialogue_line(key: String, override_resource: DialogueResource = n
 	
 	var dialogue = get_line(key, local_resource)
 	
-	yield(get_tree(), "idle_frame")
+	await  get_tree().process_frame
 	
 	self.is_dialogue_running = true
 	
@@ -79,14 +87,14 @@ func get_next_dialogue_line(key: String, override_resource: DialogueResource = n
 	
 	# Run the mutation if it is one
 	if dialogue.type == Constants.TYPE_MUTATION:
-		yield(mutate(dialogue.mutation), "completed")
+		await mutate(dialogue.mutation)
 		dialogue.queue_free()
 		if dialogue.next_id in [Constants.ID_END_CONVERSATION, Constants.ID_NULL, null]:
 			# End the conversation
 			self.is_dialogue_running = false
 			return null
 		else:
-			return get_next_dialogue_line(dialogue.next_id, local_resource)
+			return await get_next_dialogue_line(dialogue.next_id, local_resource)
 	else:
 		return dialogue
 
@@ -104,12 +112,12 @@ func replace_values(line_or_response) -> String:
 
 
 func show_example_dialogue_balloon(title: String, resource: DialogueResource = null) -> void:
-	var dialogue = yield(get_next_dialogue_line(title, resource), "completed")
+	var dialogue = await get_next_dialogue_line(title, resource)
 	if dialogue != null:
-		var balloon = preload("res://addons/dialogue_manager/example_balloon/example_balloon.tscn").instance()
+		var balloon = preload("res://addons/dialogue_manager/example_balloon/example_balloon.tscn").instantiate()
 		balloon.dialogue = dialogue
 		get_tree().current_scene.add_child(balloon)
-		show_example_dialogue_balloon(yield(balloon, "actioned"), resource)
+		show_example_dialogue_balloon(await balloon.actioned, resource)
 	
 
 ### Helpers
@@ -173,16 +181,6 @@ func get_line(key: String, local_resource: DialogueResource) -> Line:
 	return line
 
 
-func set_is_dialogue_running(value: bool) -> void:
-	if is_dialogue_running != value:
-		if value:
-			emit_signal("dialogue_started")
-		else:
-			emit_signal("dialogue_finished")
-			
-	is_dialogue_running = value
-
-
 # Check if a condition is met
 func check(condition: Dictionary) -> bool:
 	if condition.size() == 0: return true
@@ -200,7 +198,7 @@ func mutate(mutation: Dictionary) -> void:
 		var args = resolve_each(mutation.get("args"))
 		match function_name:
 			"wait":
-				yield(get_tree().create_timer(float(args[0])), "timeout")
+				await get_tree().create_timer(float(args[0])).timeout
 			"emit":
 				var current_scene = get_tree().current_scene
 				var states = [current_scene] + game_states
@@ -235,15 +233,14 @@ func mutate(mutation: Dictionary) -> void:
 				for state in states:
 					if state.has_method(function_name):
 						found = true
-						var result = state.callv(function_name, args)
-						if result is GDScriptFunctionState and result.is_valid():
-							yield(result, "completed")
+						# CHECK
+						await state.callv(function_name, args)
 				if not found and is_strict:
 					printerr("'" + function_name + "' is not a method on the current scene (" + current_scene.name + ") or on any game states (" + str(game_states) + ").")
 					assert(false, "Missing function on current scene or game state. See Output for details.")
 		
 		# Wait one frame to give the dialogue handler a chance to yield
-		yield(get_tree(), "idle_frame")
+		await get_tree().process_frame
 		return
 	
 	elif mutation.has("variable"):
@@ -263,7 +260,7 @@ func mutate(mutation: Dictionary) -> void:
 				set_state_value(lhs, apply_operation("/", get_state_value(lhs), rhs))
 		
 		# Wait one frame to give the dialogue handler a chance to yield
-		yield(get_tree(), "idle_frame")
+		await get_tree().process_frame
 
 
 func resolve_each(array: Array) -> Array:
@@ -401,8 +398,8 @@ func resolve(tokens: Array):
 		if token.get("type") == Constants.TOKEN_OPERATOR and token.get("value") in ["*", "/"]:
 			token["type"] = "value"
 			token["value"] = apply_operation(token.get("value"), tokens[i-1].get("value"), tokens[i+1].get("value"))
-			tokens.remove(i+1)
-			tokens.remove(i-1)
+			tokens.pop_at(i+1)
+			tokens.pop_at(i-1)
 			i -= 1
 		i += 1
 		
@@ -418,8 +415,8 @@ func resolve(tokens: Array):
 		if token.get("type") == Constants.TOKEN_OPERATOR and token.get("value") in ["+", "-"]:
 			token["type"] = "value"
 			token["value"] = apply_operation(token.get("value"), tokens[i-1].get("value"), tokens[i+1].get("value"))
-			tokens.remove(i+1)
-			tokens.remove(i-1)
+			tokens.pop_at(i+1)
+			tokens.pop_at(i-1)
 			i -= 1
 		i += 1
 		
@@ -435,8 +432,8 @@ func resolve(tokens: Array):
 		if token.get("type") == Constants.TOKEN_COMPARISON:
 			token["type"] = "value"
 			token["value"] = compare(token.get("value"), tokens[i-1].get("value"), tokens[i+1].get("value"))
-			tokens.remove(i+1)
-			tokens.remove(i-1)
+			tokens.pop_at(i+1)
+			tokens.pop_at(i-1)
 			i -= 1
 		i += 1
 		
@@ -452,8 +449,8 @@ func resolve(tokens: Array):
 		if token.get("type") == Constants.TOKEN_AND_OR:
 			token["type"] = "value"
 			token["value"] = apply_operation(token.get("value"), tokens[i-1].get("value"), tokens[i+1].get("value"))
-			tokens.remove(i+1)
-			tokens.remove(i-1)
+			tokens.pop_at(i+1)
+			tokens.pop_at(i-1)
 			i -= 1
 		i += 1
 				

@@ -1,6 +1,6 @@
 extends Node
 
-const Constants = preload("res://addons/dialogue_manager/constants.gd")
+const Constants := preload("res://addons/dialogue_manager/constants.gd")
 
 var dialogue_manager
 
@@ -42,7 +42,7 @@ func get_pause(index: int) -> float:
 
 
 func get_speed(index: int) -> float:
-	var speed = 1
+	var speed: float = 1.0
 	for s in speeds:
 		if s[0] > index:
 			return speed

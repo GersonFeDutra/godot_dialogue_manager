@@ -1,19 +1,19 @@
-tool
-extends WindowDialog
+@tool
+extends Window
 
 
 signal script_button_pressed(path)
 
 
-const Settings = preload("res://addons/dialogue_manager/components/settings.gd")
+const Settings := preload("res://addons/dialogue_manager/components/settings.gd")
 
 
-export var _settings := NodePath()
+@export var _settings: NodePath
 
-onready var settings: Settings = get_node(_settings)
-onready var errors_button := $Margin/VBox/Tabs/Editor/VBox/CheckForErrorsButton
-onready var missing_translations_button := $Margin/VBox/Tabs/Editor/VBox/MissingTranslationsButton
-onready var globals_list := $Margin/VBox/Tabs/Runtime/VBox/GlobalsList
+@onready var settings: Settings = get_node(_settings)
+@onready var errors_button := $Margin/VBox/Tabs/Editor/VBox/CheckForErrorsButton
+@onready var missing_translations_button := $Margin/VBox/Tabs/Editor/VBox/MissingTranslationsButton
+@onready var globals_list := $Margin/VBox/Tabs/Runtime/VBox/GlobalsList
 
 var dialogue_manager_config := ConfigFile.new()
 var all_globals: Dictionary = {}
@@ -45,7 +45,7 @@ func _on_SettingsDialog_about_to_show():
 		item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		item.set_checked(0, name in enabled_globals)
 		item.set_text(0, name)
-		item.add_button(1, get_icon("Edit", "EditorIcons"))
+		item.add_button(1, get_theme_icon("Edit", "EditorIcons"))
 		item.set_text(2, all_globals.get(name).replace("*res://", "res://"))
 	
 	globals_list.set_column_expand(0, false)

@@ -6,9 +6,9 @@ signal paused(duration)
 signal finished()
 
 
-const Line = preload("res://addons/dialogue_manager/dialogue_line.gd")
+const Line := preload("res://addons/dialogue_manager/dialogue_line.gd")
 
-export var seconds_per_step: float = 0.02
+@export var seconds_per_step: float = 0.02
 
 
 var dialogue: Line
@@ -64,12 +64,12 @@ func type_next(delta: float, seconds_needed: float) -> void:
 
 
 func type_out() -> void:
-	bbcode_text = dialogue.dialogue
+	text = dialogue.dialogue
 	percent_visible = 0
 	index = 0
 	has_finished = false
 	waiting_seconds = 0
 	# Text isn't calculated until the next frame
-	yield(get_tree(), "idle_frame")
+	await get_tree().process_frame
 	percent_per_index = 100.0 / float(get_total_character_count()) / 100.0
 	is_typing = true

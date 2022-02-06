@@ -1,16 +1,16 @@
-tool
-extends TextEdit
+@tool
+extends CodeEdit
 
 
-const ChooseTitleDialog = preload("res://addons/dialogue_manager/views/choose_title_dialog.gd")
+const ChooseTitleDialog := preload("res://addons/dialogue_manager/views/choose_title_dialog.gd")
 
 
 signal active_title_changed(title)
 
 
-export var _choose_title_dialog := NodePath()
+@export var _choose_title_dialog := NodePath()
 
-onready var choose_title_dialog: ChooseTitleDialog = get_node(_choose_title_dialog)
+@onready var choose_title_dialog: ChooseTitleDialog = get_node(_choose_title_dialog)
 
 var active_title_id: int = 0
 var current_goto_title: String = ""
@@ -24,8 +24,8 @@ var PICK_ITEM_INDEX = -1
 func _ready() -> void:
 	# Set up popup menu
 	var menu = get_menu()
-	menu.connect("about_to_show", self, "_on_menu_about_to_show")
-	menu.connect("index_pressed", self, "_on_menu_index_pressed")
+	menu.about_to_popup.connect(_on_menu_about_to_show)
+	menu.index_pressed.connect(_on_menu_index_pressed)
 	menu.add_separator()
 	
 	menu.add_item("Go to " + current_goto_title, 101,  KEY_MASK_CTRL | KEY_MASK_SHIFT | KEY_G)
@@ -34,65 +34,65 @@ func _ready() -> void:
 	menu.add_item("Create " + current_goto_title, 102, KEY_MASK_CTRL | KEY_MASK_SHIFT | KEY_C)
 	CREATE_ITEM_INDEX = menu.get_item_index(102)
 	
-	menu.add_icon_item(get_icon("Search", "EditorIcons"), "Choose a jump target...", 103,  KEY_MASK_CTRL | KEY_MASK_SHIFT | KEY_SPACE)
+	menu.add_icon_item(get_theme_icon("Search", "EditorIcons"), "Choose a jump target...", 103,  KEY_MASK_CTRL | KEY_MASK_SHIFT | KEY_SPACE)
 	PICK_ITEM_INDEX = menu.get_item_index(103)
 	
 	# Set up choose title dialog
-	choose_title_dialog.connect("title_chosen", self, "_on_title_chosen")
+	choose_title_dialog.title_chosen.connect(_on_title_chosen)
 	
 	# Colors
-	var title_color = get_color("accent_color", "Editor")
-	var comment_color = get_color("font_color", "Editor")
+	var title_color = get_theme_color("accent_color", "Editor")
+	var comment_color = get_theme_color("font_color", "Editor")
 	comment_color.a = 0.5
-	var condition_color = get_color("error_color", "Editor")
-	var value_color = get_color("warning_color", "Editor")
-	var mutation_color = get_color("success_color", "Editor")
-	var goto_color = get_color("accent_color", "Editor")
+	var condition_color = get_theme_color("error_color", "Editor")
+	var value_color = get_theme_color("warning_color", "Editor")
+	var mutation_color = get_theme_color("success_color", "Editor")
+	var goto_color = get_theme_color("accent_color", "Editor")
 	goto_color.a = 0.7
-	var dialogue_color = get_color("mono_color", "Editor")
+	var dialogue_color = get_theme_color("mono_color", "Editor")
 	
 	# Title
-	add_color_region("~", "~", title_color, true)
+	syntax_highlighter.add_color_region("~", "~", title_color, true)
 	
 	# Comments
-	add_color_region("#", "##", comment_color, true)
+	#add_color_region("#", "##", comment_color, true)
 	
 	# Conditions
-	add_keyword_color("if", condition_color)
-	add_keyword_color("elif", condition_color)
-	add_keyword_color("else", condition_color)
-	add_keyword_color("endif", condition_color)
-	add_keyword_color("in", condition_color)
-	add_keyword_color("and", condition_color)
-	add_keyword_color("or", condition_color)
+	syntax_highlighter.add_keyword_color("if", condition_color)
+	syntax_highlighter.add_keyword_color("elif", condition_color)
+	syntax_highlighter.add_keyword_color("else", condition_color)
+	syntax_highlighter.add_keyword_color("endif", condition_color)
+	syntax_highlighter.add_keyword_color("in", condition_color)
+	syntax_highlighter.add_keyword_color("and", condition_color)
+	syntax_highlighter.add_keyword_color("or", condition_color)
 	
 	# Values
-	add_keyword_color("true", value_color)
-	add_keyword_color("false", value_color)
-	add_color_override("number_color", value_color)
-	add_color_region("\"", "\"", value_color)
+	syntax_highlighter.add_keyword_color("true", value_color)
+	syntax_highlighter.add_keyword_color("false", value_color)
+	add_theme_color_override("number_color", value_color)
+	syntax_highlighter.add_color_region("\"", "\"", value_color)
 	
 	# Mutations
-	add_keyword_color("do", mutation_color)
-	add_keyword_color("set", mutation_color)
-	add_color_override("function_color", mutation_color)
+	syntax_highlighter.add_keyword_color("do", mutation_color)
+	syntax_highlighter.add_keyword_color("set", mutation_color)
+	add_theme_color_override("function_color", mutation_color)
 	
 	# Jumps
-	add_color_region("=>", "<=", goto_color, true)
+	syntax_highlighter.add_color_region("=>", "<=", goto_color, true)
 	
 	# Dialogue
-	add_color_region(": ", "::", dialogue_color, true)
+	syntax_highlighter.add_color_region(": ", "::", dialogue_color, true)
 	
 	# Errors
-	add_color_override("bookmark_color", Color("ff5555"))
+	add_theme_color_override("bookmark_color", Color("ff5555"))
 	
 	# General UI
-	add_constant_override("line_spacing", 10)
-	add_color_override("symbol_color", get_color("font_color", "Editor"))
-	add_color_override("font_color", get_color("font_color", "Editor"))
-	add_color_override("background_color", get_color("base_color", "Editor"))
-	add_color_override("current_line_color", get_color("base_color", "Editor").lightened(0.1))
-	add_font_override("font", get_font("source", "EditorFonts"))
+	add_theme_constant_override("line_spacing", 10)
+	add_theme_color_override("symbol_color", get_theme_color("font_color", "Editor"))
+	add_theme_color_override("font_color", get_theme_color("font_color", "Editor"))
+	add_theme_color_override("background_color", get_theme_color("base_color", "Editor"))
+	add_theme_color_override("current_line_color", get_theme_color("base_color", "Editor").lightened(0.1))
+	add_theme_font_override("font", get_theme_font("source", "EditorFonts"))
 
 
 func _gui_input(event):
@@ -108,8 +108,8 @@ func _gui_input(event):
 			choose_title_dialog.choose_a_title(get_titles())
 
 
-func get_titles() -> Array:
-	var titles = PoolStringArray([])
+func get_titles() -> PackedStringArray:
+	var titles = PackedStringArray()
 	var lines = text.split("\n")
 	for line in lines:
 		if line.begins_with("~ "):
@@ -121,18 +121,18 @@ func go_to_title(title: String) -> void:
 	var lines = text.split("\n")
 	for i in range(0, lines.size()):
 		if lines[i].strip_edges() == "~ " + title:
-			cursor_set_line(i)
-			center_viewport_to_cursor()
+			set_caret_line(i)
+			center_viewport_to_caret()
 
 
 func create_title(title: String) -> void:
 	text = text + "\n\n~ " + title + "\n\nCharacter: This is a new node."
 	emit_signal("text_changed")
-	cursor_set_line(get_line_count() - 1)
+	set_caret_line(get_line_count() - 1)
 
 
 func check_active_title() -> void:
-	var line_number = cursor_get_line()
+	var line_number = get_caret_line()
 	var lines = text.split("\n")
 	# Look at each line above this one to find the next title line
 	for i in range(line_number, -1, -1):
@@ -143,7 +143,7 @@ func check_active_title() -> void:
 
 
 func update_current_goto_title() -> void:
-	var line_number = cursor_get_line()
+	var line_number = get_caret_line()
 	var current_line = get_line(line_number)
 	
 	# If we are on a goto line then make a note of the title and the line
@@ -198,34 +198,33 @@ func _on_menu_about_to_show():
 		menu.set_item_disabled(PICK_ITEM_INDEX, true)
 
 
-func _on_menu_index_pressed(index):
-	match index:
-		GOTO_ITEM_INDEX:
-			go_to_title(current_goto_title)
-		
-		CREATE_ITEM_INDEX:
-			create_title(current_goto_title)
-		
-		PICK_ITEM_INDEX:
-			choose_title_dialog.choose_a_title(get_titles())
+func _on_menu_index_pressed(index) -> void:
+	
+	if index == GOTO_ITEM_INDEX:
+		go_to_title(current_goto_title)
+	elif index == CREATE_ITEM_INDEX:
+		create_title(current_goto_title)
+	#elif PICK_ITEM_INDEX:
+	else:
+		choose_title_dialog.choose_a_title(get_titles())
 
 
-func _on_title_chosen(title):
-	var cursor_line = cursor_get_line()
+func _on_title_chosen(title) -> void:
+	var cursor_line = get_caret_line()
 	var line: String = get_line(cursor_line)
 	line = line.substr(0, line.find("=> ") + 2)
 	
 	set_line(cursor_line, line + " " + title)
 	current_goto_title = title
 	
-	cursor_set_line(cursor_line)
+	set_caret_line(cursor_line)
 
 
-func _on_CodeEditor_cursor_changed():
+func _on_CodeEditor_caret_changed() -> void:
 	check_active_title()
 	update_current_goto_title()
 
 
-func _on_CodeEditor_text_changed():
+func _on_CodeEditor_text_changed() -> void:
 	check_active_title()
 	update_current_goto_title()

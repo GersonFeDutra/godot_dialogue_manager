@@ -1,8 +1,8 @@
-tool
+@tool
 extends Node
 
 
-const Constants = preload("res://addons/dialogue_manager/constants.gd")
+const Constants := preload("res://addons/dialogue_manager/constants.gd")
 
 
 var config := ConfigFile.new()
