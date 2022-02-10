@@ -20,6 +20,7 @@ var dialogue: Line
 
 func _ready() -> void:
 	balloon.visible = false
+	size_check_label.modulate.a = 0
 	
 	if not dialogue:
 		queue_free()
@@ -30,8 +31,18 @@ func _ready() -> void:
 		character_label.bbcode_text = dialogue.character
 	else:
 		character_label.visible = false
-	
 	dialogue_label.dialogue = dialogue
+	
+	# For some reason, RichTextLabels within containers
+	# don't resize properly when their content changes
+	size_check_label.rect_size.x = dialogue_label.rect_size.x
+	size_check_label.bbcode_text = dialogue.dialogue
+	# Give the size check a chance to resize
+	yield(get_tree(), "idle_frame")
+	
+	# Resize our dialogue label with the new size hint
+	dialogue_label.rect_min_size = Vector2(dialogue_label.rect_size.x, size_check_label.get_content_height())
+	dialogue_label.rect_size = Vector2(0, 0)
 	
 	# Show any responses we have
 	responses_menu.is_active = false
@@ -46,11 +57,12 @@ func _ready() -> void:
 	
 	# Make sure our responses get included in the height reset
 	responses_menu.visible = true
+	margin.rect_size = Vector2(0, 0)
 	
 	await get_tree().process_frame
 	balloon.rect_min_size = margin.rect_size
-	balloon.rect_size = Vector2(0, -1)
-	balloon.rect_global_position = Vector2(0, balloon.get_viewport_rect().size.y - balloon.rect_size.y)
+	balloon.rect_size = Vector2(0, 0)
+	balloon.rect_global_position.y = balloon.get_viewport_rect().size.y - balloon.rect_size.y - 20
 	
 	# Ok, we can hide it now. It will come back later if we have any responses
 	responses_menu.visible = false
