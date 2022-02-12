@@ -5,7 +5,7 @@ extends Node2D
 
 
 func _ready():
-	DialogueManager.is_strict = false
+	#DialogueManager.is_strict = false
 	DialogueManager.dialogue_finished.connect(_on_dialogue_finished)
 	
 	var title = settings.get_editor_value("run_title")

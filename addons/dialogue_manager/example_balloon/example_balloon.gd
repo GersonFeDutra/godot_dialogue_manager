@@ -13,6 +13,7 @@ const MenuItem := preload("res://addons/dialogue_manager/example_balloon/menu_it
 @onready var character_label := $Balloon/Margin/VBox/Character
 @onready var dialogue_label := $Balloon/Margin/VBox/Dialogue
 @onready var responses_menu := $Balloon/Margin/VBox/Responses/Menu
+@onready var size_check_label := $SizeCheck
 
 
 var dialogue: Line
@@ -38,7 +39,7 @@ func _ready() -> void:
 	size_check_label.rect_size.x = dialogue_label.rect_size.x
 	size_check_label.bbcode_text = dialogue.dialogue
 	# Give the size check a chance to resize
-	yield(get_tree(), "idle_frame")
+	await get_tree().process_frame
 	
 	# Resize our dialogue label with the new size hint
 	dialogue_label.rect_min_size = Vector2(dialogue_label.rect_size.x, size_check_label.get_content_height())

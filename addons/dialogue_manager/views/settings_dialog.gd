@@ -23,9 +23,9 @@ var enabled_globals: Array = []
 ### Signals
 
 
-func _on_SettingsDialog_about_to_show():
-	errors_button.pressed = settings.get_editor_value("check_for_errors", true)
-	missing_translations_button.pressed = settings.get_editor_value("missing_translations_are_errors", false)
+func _on_SettingsDialog_about_to_popup():
+	errors_button.button_pressed = settings.get_editor_value("check_for_errors", true)
+	missing_translations_button.button_pressed = settings.get_editor_value("missing_translations_are_errors", false)
 
 	var project = ConfigFile.new()
 	var err = project.load("res://project.godot")
@@ -49,9 +49,13 @@ func _on_SettingsDialog_about_to_show():
 		item.set_text(2, all_globals.get(name).replace("*res://", "res://"))
 	
 	globals_list.set_column_expand(0, false)
-	globals_list.set_column_min_width(0, 250)
+	
+	# WATCH
+	#globals_list.set_column_min_width(0, 250)
+	globals_list.set_column_expand_ratio(0, 250)
 	globals_list.set_column_expand(1, false)
-	globals_list.set_column_min_width(1, 40)
+	#globals_list.set_column_min_width(1, 40)
+	globals_list.set_column_expand_ratio(1, 40)
 	globals_list.set_column_titles_visible(true)
 	globals_list.set_column_title(0, "Autoload")
 	globals_list.set_column_title(1, "")

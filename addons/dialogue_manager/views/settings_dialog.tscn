@@ -125,7 +125,7 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="Margin/VBox/Tabs/Runtime"]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 608.0
+offset_right = 576.0
 offset_bottom = 435.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -162,6 +162,7 @@ offset_right = 314.0
 offset_bottom = 31.0
 text = "Done"
 
+[connection signal="about_to_popup" from="." to="." method="_on_SettingsDialog_about_to_popup"]
 [connection signal="toggled" from="Margin/VBox/Tabs/Editor/VBox/CheckForErrorsButton" to="." method="_on_CheckForErrorsButton_toggled"]
 [connection signal="toggled" from="Margin/VBox/Tabs/Editor/VBox/MissingTranslationsButton" to="." method="_on_MissingTranslationsButton_toggled"]
 [connection signal="button_pressed" from="Margin/VBox/Tabs/Runtime/VBox/GlobalsList" to="." method="_on_GlobalsList_button_pressed"]

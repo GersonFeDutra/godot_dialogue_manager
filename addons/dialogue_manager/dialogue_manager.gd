@@ -237,7 +237,7 @@ func mutate(mutation: Dictionary) -> void:
 					printerr("'" + function_name + "' is not a method on the current scene (" + current_scene.name + ") or on any game states (" + str(game_states) + ").")
 					assert(false, "Missing function on current scene or game state. See Output for details.")
 		
-		# Wait one frame to give the dialogue handler a chance to yield
+		# Wait one frame to give the dialogue handler a chance to await
 		await get_tree().process_frame
 		return
 	
@@ -257,7 +257,7 @@ func mutate(mutation: Dictionary) -> void:
 			"/=":
 				set_state_value(lhs, apply_operation("/", get_state_value(lhs), rhs))
 		
-		# Wait one frame to give the dialogue handler a chance to yield
+		# Wait one frame to give the dialogue handler a chance to await
 		await get_tree().process_frame
 
 
@@ -301,7 +301,11 @@ func get_state_value(property: String):
 		if has_property(state, property):
 			return state.get(property)
 
-	printerr("'" + property + "' is not a property on the current scene (" + current_scene.name + ") or on any game states (" + str(game_states) + ").")
+	printerr("'{property}' is not a property on the current scene (name + ) or on any game states ({states}).".format({
+		"property": property,
+		"name": current_scene.name,
+		"states": str(game_states),
+	}))
 	assert(false, "Missing property on current scene or game state. See Output for details.")
 
 
@@ -314,7 +318,12 @@ func set_state_value(property: String, value) -> void:
 			state.set(property, value)
 			return
 	
-	printerr("'" + property + "' is not a property on the current scene (" + current_scene.name + ") or on any game states (" + str(game_states) + ").")
+	printerr("'{property}' is not a property on the current scene ({name}) or on any game states ({states}).".format({
+			"property": property,
+			"name": current_scene.name,
+			"states": str(game_states),
+		}
+	))
 	assert(false, "Missing property on current scene or game state. See Output for details.")
 
 
@@ -332,7 +341,11 @@ func resolve(tokens: Array):
 					token["type"] = "value"
 					token["value"] = state.callv(function_name, args)
 			
-			printerr("'" + function_name + "' is not a method on the current scene (" + current_scene.name + ") or on any game states (" + str(game_states) + ").")
+			printerr("'{func_name}' is not a method on the current scene ({name}) or on any game states ({states}).".format({
+				"func_name": function_name,
+				"name": current_scene.name,
+				"states": str(game_states),
+			}))
 			assert(false, "Missing function on current scene or game state. See Output for details.")
 		
 		elif token.get("type") == Constants.TOKEN_DICTIONARY_REFERENCE:
