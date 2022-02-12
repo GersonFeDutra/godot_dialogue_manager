@@ -24,7 +24,7 @@ var TOKEN_DEFINITIONS: Dictionary = {}
 
 
 func _ready() -> void:
-	VALID_TITLE_REGEX.compile("^[a-zA-Z_0-9]+$")
+	VALID_TITLE_REGEX.compile("^[^\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\+\\{\\}\\[\\]\\;\\:\\\"\\'\\,\\.\\<\\>\\?\\/\\s]+$")
 	TRANSLATION_REGEX.compile("\\[TR:(?<tr>.*?)\\]")
 	MUTATION_REGEX.compile("(do|set) ((?<lhs>[a-z_A-Z][a-z_A-Z0-9]+) ?(?<operator>\\+=|-=|\\*=\\/=|=) ? (?<rhs>.*)|(?<function>[a-z_A-Z][a-z_A-Z0-9]+)\\((?<args>.*)\\))")
 	WRAPPED_CONDITION_REGEX.compile("\\[if (?<condition>.*)\\]")
@@ -210,6 +210,9 @@ func parse(content: String) -> Dictionary:
 			line["pauses"] = markers.get("pauses")
 			line["speeds"] = markers.get("speeds")
 			line["inline_mutations"] = markers.get("mutations")
+			
+			# Unescape any newlines
+			line["text"] = line.get("text").replace("\\n", "\n")
 		
 		# Work out where to go after this line
 		if line.get("next_id") == Constants.ID_NULL:
