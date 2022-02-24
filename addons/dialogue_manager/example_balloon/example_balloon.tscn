@@ -45,16 +45,18 @@ __meta__ = {
 anchor_right = 1.0
 anchor_bottom = 1.0
 texture = ExtResource( "8" )
-patch_margin_left = 25
-patch_margin_top = 25
-patch_margin_right = 25
-patch_margin_bottom = 25
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Margin" type="MarginContainer" parent="Balloon"]
 anchor_right = 1.0
+offset_right = -2.19995
+offset_bottom = 192.0
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_left = 40
@@ -66,12 +68,12 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="Balloon/Margin"]
 offset_left = 40.0
 offset_top = 10.0
-offset_right = 1024.0
+offset_right = 777.0
 offset_bottom = 182.0
 
 [node name="Character" type="RichTextLabel" parent="Balloon/Margin/VBox"]
 modulate = Color(1, 1, 1, 0.470588)
-offset_right = 984.0
+offset_right = 737.0
 offset_bottom = 30.0
 rect_min_size = Vector2(0, 30)
 theme_override_colors/default_color = Color(0, 0, 0, 1)
@@ -82,7 +84,7 @@ scroll_active = false
 
 [node name="Dialogue" parent="Balloon/Margin/VBox" instance=ExtResource( "7" )]
 offset_top = 34.0
-offset_right = 984.0
+offset_right = 737.0
 offset_bottom = 70.0
 rect_min_size = Vector2(0, 36)
 theme_override_colors/default_color = Color(0, 0, 0, 1)
@@ -93,7 +95,7 @@ text = "This is a bunch of dialogue!"
 
 [node name="Responses" type="MarginContainer" parent="Balloon/Margin/VBox"]
 offset_top = 74.0
-offset_right = 984.0
+offset_right = 737.0
 offset_bottom = 172.0
 theme_override_constants/margin_left = 40
 __meta__ = {
@@ -101,6 +103,8 @@ __meta__ = {
 }
 
 [node name="Menu" parent="Balloon/Margin/VBox/Responses" instance=ExtResource( "2" )]
+offset_right = 737.0
+rect_min_size = Vector2(600, 98)
 _pointer = NodePath("../Pointer")
 
 [node name="Pointer" type="Sprite2D" parent="Balloon/Margin/VBox/Responses"]
